@@ -15,17 +15,17 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 	try
 	{
 		::SetLastError(NO_ERROR);
-		//CreateMutex(NULL, false, L"Boxon");
-		//if (GetLastError() != ERROR_ALREADY_EXISTS) {
+		CreateMutex(NULL, false, L"Boxon");
+		if (GetLastError() != ERROR_ALREADY_EXISTS) {
 			Application->Initialize();
 			Application->MainFormOnTaskBar = true;
-			//TStyleManager::TrySetStyle("..\\Style\\Cobalt XEMedia");
-			TStyleManager::TrySetStyle("Cobalt XEMedia");
+			//TStyleManager::TrySetStyle("Cobalt XEMedia");
+			TStyleManager::TrySetStyle("Charcoal Dark Slate");
 		Application->CreateForm(__classid(TBoxon), &Boxon);
-		Application->CreateForm(__classid(TOptions), &Options);
-		Application->CreateForm(__classid(TBoxmin), &Boxmin);
-		Application->Run();
-        //}
+			Application->CreateForm(__classid(TOptions), &Options);
+			Application->CreateForm(__classid(TBoxmin), &Boxmin);
+			Application->Run();
+		}
 	}
 	catch (Exception &exception)
 	{
