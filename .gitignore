@@ -5,15 +5,16 @@
 *.map
 *.pdi
 *.tds
-Component/*
-Compil/*
-Obj/*
+Component
+!Component/Readme.md
+Compil
+!Compil/Readme.md
+Obj
+!Obj/Readme.md
 Proj/__history
 Proj/__recovery
 Src/__history
 Config - playlist ancien format/
 Inno Setup/
-Lib/
-Redist/
-Win32/
-!Win32/*.exe
+Redist
+!Redist/Readme.md
