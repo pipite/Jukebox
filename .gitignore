@@ -5,7 +5,7 @@
 *.map
 *.pdi
 *.tds
-Component
+Component/*
 !Component/Readme.md
 Compil
 !Compil/Readme.md
