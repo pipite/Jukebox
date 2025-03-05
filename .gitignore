@@ -1,0 +1,19 @@
+*.ilc
+*.ild
+*.ilf
+*.ils
+*.map
+*.pdi
+*.tds
+Component/*
+Compil/*
+Obj/*
+Proj/__history
+Proj/__recovery
+Src/__history
+Config - playlist ancien format/
+Inno Setup/
+Lib/
+Redist/
+Win32/
+!Win32/*.exe
