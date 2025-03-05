@@ -7,9 +7,9 @@
 *.tds
 Component/*
 !Component/Readme.md
-Compil
+Compil/*
 !Compil/Readme.md
-Obj
+Obj/*
 !Obj/Readme.md
 Proj/__history
 Proj/__recovery
