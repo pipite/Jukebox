@@ -16,5 +16,5 @@ Proj/__recovery
 Src/__history
 Config - playlist ancien format/
 Inno Setup/
-Redist
+Redist/*
 !Redist/Readme.md
