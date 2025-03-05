@@ -4,6 +4,8 @@
 #pragma hdrstop
 #include <tchar.h>
 //---------------------------------------------------------------------------
+#include <Vcl.Styles.hpp>
+#include <Vcl.Themes.hpp>
 USEFORM("..\Src\Boxon.cpp", Boxon);
 USEFORM("..\Src\FicheBoxmin.cpp", Boxmin);
 USEFORM("..\Src\FicheOptions.cpp", Options);
@@ -18,7 +20,8 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 			Application->Initialize();
 			Application->MainFormOnTaskBar = true;
 			//TStyleManager::TrySetStyle("..\\Style\\Cobalt XEMedia");
-			Application->CreateForm(__classid(TBoxon), &Boxon);
+			TStyleManager::TrySetStyle("Cobalt XEMedia");
+		Application->CreateForm(__classid(TBoxon), &Boxon);
 		Application->CreateForm(__classid(TOptions), &Options);
 		Application->CreateForm(__classid(TBoxmin), &Boxmin);
 		Application->Run();
