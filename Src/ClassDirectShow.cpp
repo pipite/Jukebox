@@ -141,7 +141,6 @@ unsigned __int64 __fastcall XDirectShow::GetPosition(void) {
 	if ( PHaveChannel && Pims ) {
 		REFERENCE_TIME pos = -1;
 		HRESULT hr = Pims->GetCurrentPosition(&pos);
-//		unsigned __int64 p = (unsigned __int64) (pos / DXTIMEFACTOR);
 		if(SUCCEEDED(hr)) return (unsigned __int64) (pos / DXTIMEFACTOR);
 	}
 	return 0;
