@@ -6,9 +6,9 @@
 //---------------------------------------------------------------------------
 #include <Vcl.Styles.hpp>
 #include <Vcl.Themes.hpp>
-USEFORM("..\Src\Boxon.cpp", Boxon);
 USEFORM("..\Src\FicheBoxmin.cpp", Boxmin);
 USEFORM("..\Src\FicheOptions.cpp", Options);
+USEFORM("..\Src\Boxon.cpp", Boxon);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {
@@ -22,9 +22,9 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 			//TStyleManager::TrySetStyle("Cobalt XEMedia");
 			TStyleManager::TrySetStyle("Charcoal Dark Slate");
 		Application->CreateForm(__classid(TBoxon), &Boxon);
-			Application->CreateForm(__classid(TOptions), &Options);
-			Application->CreateForm(__classid(TBoxmin), &Boxmin);
-			Application->Run();
+		Application->CreateForm(__classid(TOptions), &Options);
+		Application->CreateForm(__classid(TBoxmin), &Boxmin);
+		Application->Run();
 		}
 	}
 	catch (Exception &exception)

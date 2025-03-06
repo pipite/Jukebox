@@ -115,6 +115,8 @@
         <IntermediateOutputDir>..\Compil</IntermediateOutputDir>
         <UsePackages>false</UsePackages>
         <LinkPackageStatics>rtl.lib;vcl.lib;vclimg.lib;vclwinx.lib</LinkPackageStatics>
+        <BCC_UseClassicCompiler>false</BCC_UseClassicCompiler>
+        <BCC_InstructionSet>4</BCC_InstructionSet>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <Defines>NDEBUG;$(Defines)</Defines>
@@ -142,6 +144,10 @@
             <DependentOn>..\Src\Boxon.h</DependentOn>
             <BuildOrder>2</BuildOrder>
         </CppCompile>
+        <CppCompile Include="..\Src\ClassAudioDevice.cpp">
+            <DependentOn>..\Src\ClassAudioDevice.h</DependentOn>
+            <BuildOrder>5</BuildOrder>
+        </CppCompile>
         <CppCompile Include="..\Src\ClassBass.cpp">
             <DependentOn>..\Src\ClassBass.h</DependentOn>
             <BuildOrder>3</BuildOrder>
@@ -149,10 +155,6 @@
         <CppCompile Include="..\Src\ClassCore.cpp">
             <DependentOn>..\Src\ClassCore.h</DependentOn>
             <BuildOrder>4</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="..\Src\ClassDevice.cpp">
-            <DependentOn>..\Src\ClassDevice.h</DependentOn>
-            <BuildOrder>5</BuildOrder>
         </CppCompile>
         <CppCompile Include="..\Src\ClassDirectShow.cpp">
             <DependentOn>..\Src\ClassDirectShow.h</DependentOn>
@@ -180,7 +182,7 @@
         </CppCompile>
         <CppCompile Include="..\Src\ClassPlayers.cpp">
             <DependentOn>..\Src\ClassPlayers.h</DependentOn>
-            <BuildOrder>12</BuildOrder>
+            <BuildOrder>28</BuildOrder>
         </CppCompile>
         <CppCompile Include="..\Src\ClassSavFile.cpp">
             <DependentOn>..\Src\ClassSavFile.h</DependentOn>
