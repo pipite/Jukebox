@@ -24,7 +24,7 @@ __fastcall XSettings::XSettings(XCore *core) {
 		return;
 	}
 
-	PSettingPath   = ExtractFilePath(Application->ExeName) + L"Config";
+	PSettingPath   = ExtractFilePath(Application->ExeName) + L"\\Config";
 	PBackupPath    = PSettingPath + L"\\Backup";
 	PSettingFile   = L"Config.ini";
 	if ( !DirectoryExists(PSettingPath) ) CreateDir(PSettingPath);

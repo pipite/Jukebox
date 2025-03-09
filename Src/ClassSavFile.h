@@ -31,7 +31,7 @@ class XFile {
 					__fastcall XFile(XCore *core);
 					__fastcall ~XFile(void);
 
-	void 			__fastcall ConvertArbo(void);
+	//void 			__fastcall ConvertArbo(void);
 	bool 			__fastcall ConvertPlaylist(void);
 	void			__fastcall Save(void);
 	void 			__fastcall SavePlaylist(UnicodeString filename);

@@ -24,32 +24,6 @@ void __fastcall XFile::MoveToArchive(UnicodeString src) {
 	TFile::Delete(src);
 }
 
-void __fastcall XFile::ConvertArbo(void) {
-	char s1[1000];
-	UnicodeString p1, p2;
-	int i;
-
-	// Analyse Arbo V22 ou V23
-	// 0,0,0,chemin
-	if ( HaveArbo ) {
-		strcpy(s1, "");
-		Pf.open( PathArbo.c_str() );
-		Pf.getline(s1, 999, '\n');
-		i = strlen(s1)-6;
-		p1 = UnicodeString(s1).SubString(7,i);
-		Pf.getline(s1, 999, '\n');
-		Pf.close();
-		p2 = UnicodeString(s1).SubString(7,i);
-		if ( p1.LowerCase() == p2.LowerCase() ) {
-			// Convertir en V23
-			PFile->LoadFromFile(PathArbo);
-			RemoveRootPath(true);
-			PFile->Strings[0] = PFile->Strings[0] + p1;
-			PFile->SaveToFile(PathArbo+".Convert");
-		}
-	}
-}
-
 bool __fastcall XFile::ConvertPlaylist(void) {
 	char s1[1000];
 	UnicodeString p1, p2;
@@ -110,12 +84,6 @@ void __fastcall XFile::RemoveRootPath(bool bypass) {
 
 void __fastcall XFile::Save(void) {
 	if ( !Core->Loader->Loaded ) return;
-	ArchiveArbo();
-	PFile->Clear();
-	PLevel = 0;
-	SaveRecurseNode(Core->TvList->NRArbo);
-	PFile->SaveToFile(PathArbo);
-	Core->Loader->SaveArboNeeded = false;
 	if (Core->Loader->SavePlayListNeeded) {
 		ArchivePlayList();
 		SavePlaylist(PathPlaylist);
@@ -238,3 +206,32 @@ UnicodeString __fastcall XFile::GetExtendDate(void) {
 	return FormatDateTime(L".yyyy_mm_dd__hh_nn_ss",Now());
 }
 
+
+/*
+ void __fastcall XFile::ConvertArbo(void) {
+	char s1[1000];
+	UnicodeString p1, p2;
+	int i;
+
+	// Analyse Arbo V22 ou V23
+	// 0,0,0,chemin
+	if ( HaveArbo ) {
+		strcpy(s1, "");
+		Pf.open( PathArbo.c_str() );
+		Pf.getline(s1, 999, '\n');
+		i = strlen(s1)-6;
+		p1 = UnicodeString(s1).SubString(7,i);
+		Pf.getline(s1, 999, '\n');
+		Pf.close();
+		p2 = UnicodeString(s1).SubString(7,i);
+		if ( p1.LowerCase() == p2.LowerCase() ) {
+			// Convertir en V23
+			PFile->LoadFromFile(PathArbo);
+			RemoveRootPath(true);
+			PFile->Strings[0] = PFile->Strings[0] + p1;
+			PFile->SaveToFile(PathArbo+".Convert");
+		}
+	}
+}
+
+*/

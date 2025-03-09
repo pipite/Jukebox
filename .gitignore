@@ -18,4 +18,5 @@ Src/__recovery
 Config - playlist ancien format/
 Inno Setup/
 Redist/*
+Bin/Config/Backup/*
 !Redist/Readme.md
