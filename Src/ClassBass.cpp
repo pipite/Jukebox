@@ -34,7 +34,7 @@ bool __fastcall XBass::Initialize(HWND hwnd) {
 	PChannel = NULL;
 	return true;
 }
-/*
+
 bool __fastcall XBass::IsValidAudioFile(XNode *node) {
 	HSTREAM stream = BASS_StreamCreateFile(FALSE, node->Path.w_str(), 0, 0, 0);
 	if (!stream) {
@@ -44,7 +44,7 @@ bool __fastcall XBass::IsValidAudioFile(XNode *node) {
 		return true;
 	}
 }
-*/
+
 bool __fastcall XBass::SetNode(XNode *node) {
 	if (PChannel != NULL) BASS_StreamFree(PChannel);
 	PChannel  = BASS_StreamCreateFile( false, node->Path.w_str(), 0, 0, 0 );

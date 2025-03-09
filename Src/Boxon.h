@@ -19,6 +19,7 @@ class TBoxon;
 #include <Vcl.StdCtrls.hpp>
 #include <Vcl.ToolWin.hpp>
 #include <Vcl.WinXCtrls.hpp>
+#include <algorithm> // min max
 
 #include "ClassCore.h"
 #include "ClassIntf.h"

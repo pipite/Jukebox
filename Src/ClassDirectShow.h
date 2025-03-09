@@ -53,6 +53,7 @@ public:
 	bool __fastcall Initialize(HWND hwnd);
 	bool __fastcall Play(void);
 	void __fastcall Stop(void);
+	bool __fastcall IsValidAudioFile(XNode *node);
 
 	__property XNode*           Node        =	{               		write = SetNode};
 	__property unsigned __int64 MsLength    =	{read = GetMsLength};

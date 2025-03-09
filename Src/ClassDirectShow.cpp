@@ -56,6 +56,24 @@ void __fastcall XDirectShow::Cleanup(void) {
 	PIsPlaying   = false;
 }
 
+bool IsValidMediaFile(XNode *node) {
+	IMediaDet* pMediaDet = nullptr;
+    HRESULT hr = CoInitialize(NULL);
+    if (FAILED(hr)) return false;
+
+    hr = CoCreateInstance(CLSID_MediaDet, NULL, CLSCTX_INPROC_SERVER, IID_IMediaDet, (void**)&pMediaDet);
+    if (FAILED(hr)) {
+        CoUninitialize();
+        return false;
+    }
+
+	hr = pMediaDet->put_Filename(node->Path.c_str());
+    pMediaDet->Release();
+    CoUninitialize();
+
+    return SUCCEEDED(hr);
+}
+
 bool __fastcall XDirectShow::SetNode(XNode *node) {
 	Cleanup();
 	::CoInitialize(NULL);

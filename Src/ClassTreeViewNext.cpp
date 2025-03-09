@@ -69,7 +69,7 @@ void __fastcall XTvNext::Randomize(void) {
 	Fill();
 }
 
-XNode* __fastcall XTvNext::GetPop(void) {
+XNode* __fastcall XTvNext::Pop(void) {
 	TTreeNode *tn;
 	XNode *newnode;
 

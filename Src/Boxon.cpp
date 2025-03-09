@@ -9,6 +9,8 @@
 #pragma package(smart_init)
 #pragma resource "*.dfm"
 
+using namespace std;
+
 TBoxon *Boxon;
 
 //---------------------------------------------------------------------------
@@ -109,14 +111,14 @@ void __fastcall TBoxon::ToolButton2Click(TObject *Sender)
 void __fastcall TBoxon::FormResize(TObject *Sender)
 {
 	static bool max;
-	static LWidth, oLWidth;
-	static RWidth, oRWidth;
+	static int LWidth, oLWidth;
+	static int RWidth, oRWidth;
 
-	static WHeight, oWHeight;
-	static WWidth, oWWidth;
+	static int WHeight, oWHeight;
+	static int WWidth, oWWidth;
 
-	static NHeight, oNHeight;
-	static PHeight, oPHeight;
+	static int NHeight, oNHeight;
+	static int PHeight, oPHeight;
 
 	if (max) {
 		max = false;
@@ -178,8 +180,8 @@ void __fastcall TBoxon::Panel_FontSize(void) {
 	static int w = Width;
 	int fontsize;
 
-	fontsize = std::max(Core->Settings->FontSizeMin ,int (Width/110) + 1);
-	fontsize = std::min(Core->Settings->FontSizeMax ,fontsize);
+	fontsize = max(Core->Settings->FontSizeMin ,int (Width/110) + 1);
+	fontsize = min(Core->Settings->FontSizeMax ,fontsize);
 	Core->FontSize = fontsize;
 }
 

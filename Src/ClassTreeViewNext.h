@@ -22,7 +22,6 @@ class XTvNext : public TTreeView {
 
 	TTreeNode*   __fastcall GetTNNext(void);
 	XNode*       __fastcall GetNext(void);
-	XNode*       __fastcall GetPop(void);
 	unsigned     __fastcall GetCountSong(void);
 
 	void 		 __fastcall RecurseShuffle(TTreeNode *rstart);
@@ -46,11 +45,12 @@ public:
 	void         __fastcall Randomize(void);
 	void         __fastcall Fill(void);
 	void 		 __fastcall Shuffle(void);
+	XNode*       __fastcall Pop(void);
 
 	__property TTreeNode *TNR         = { read = PTNR};
 	__property TTreeNode *TNNext      = { read = GetTNNext};
 	__property XNode     *Next		  = { read = GetNext};
-	__property XNode     *Pop		  = { read = GetPop};
+	//__property XNode     *Pop		  = { read = GetPop};
 	__property XNode     *NR    	  = { read = PNR};
 	__property unsigned   CountSong	  = { read = GetCountSong};
 

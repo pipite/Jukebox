@@ -38,7 +38,7 @@ void __fastcall XMix::Init(void) {
 		Core->TvList->SetNodeRoot();
 		Core->TvPast->Reset();
 		Core->TvNext->Fill();
-		XNode *cn = Core->TvNext->Pop;
+		XNode *cn = Core->TvNext->Pop();
 		PCurrent->Node = cn;
 		Core->TvNext->Fill();
 		PNext->Node = Core->TvNext->Next;
@@ -65,7 +65,7 @@ void __fastcall XMix::Auto(void) {
 			if (IsTimeToStartMix) {
 				PCurrent->Play();
 				Last->Stop();
-				Core->TvNext->Pop;
+				Core->TvNext->Pop();
 				Roll();
 				PNext->Node = Core->TvNext->Next;
 				Core->TvNext->Fill();
@@ -79,7 +79,7 @@ void __fastcall XMix::Auto(void) {
 }
 
 void __fastcall XMix::NextNow(void) {
-	NodeNow(Core->TvNext->Pop);
+	NodeNow(Core->TvNext->Pop());
 }
 
 void __fastcall XMix::NodeNow(XNode *node) {
