@@ -18,6 +18,7 @@ __fastcall XMix::XMix(HWND handle, XCore *core) {
 	PLast         = new XPlayers(Core, Handle);
 	PCurrent      = new XPlayers(Core, Handle);
 	PNext         = new XPlayers(Core, Handle);
+	PTest         = new XPlayers(Core, Handle);
 	PSpectrum     = new XSpectrum(this);
 	PWave         = new XWave(Core);
 	PTmp          = NULL;
@@ -31,6 +32,7 @@ __fastcall XMix::~XMix(void) {
 	if (PLast     != NULL) delete PLast;
 	if (PCurrent  != NULL) delete PCurrent;
 	if (PNext     != NULL) delete PNext;
+	if (PTest     != NULL) delete PTest;
 };
 
 void __fastcall XMix::Init(void) {
@@ -102,7 +104,7 @@ void __fastcall XMix::CrossFade(void) {
 	a = PLast->FadeOut();
 	b = PCurrent->FadeIn();
 	if ( a || b ) PIsMixing = true; else PIsMixing = false;
-};
+}
 
 
 bool __fastcall XMix::GetIsTimeToStartMix(void) {
@@ -117,19 +119,19 @@ void __fastcall XMix::Play(void) {
 	} else {
 		PLast->Stop();
 	}
-};
+}
 
 void __fastcall XMix::Stop(void) {
 	PLast->Stop();
 	PCurrent->Stop();
-};
+}
 
 unsigned __int64 __fastcall XMix::GetPosition(void) {
 	unsigned __int64 l;
 	l = PCurrent->MsLength;
 	if (l == 0) return 0;
 	return PCurrent->Position;
-};
+}
 
 
 

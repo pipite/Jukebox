@@ -8,6 +8,7 @@
 
 // ---------------------------------------------------------------------------
 //   ClassPlayers     Unité: Miliseconde
+//     public
 // ---------------------------------------------------------------------------
 __fastcall XPlayers::XPlayers(XCore *core, HWND hwnd) {
 	Core          = core;
@@ -74,6 +75,11 @@ void __fastcall XPlayers::Stop(void) {
 	PIsFadeOut = false;
 }
 
+bool __fastcall XPlayers::IsAudioFile(XNode *node) {
+	if ( PEngine ) return PEngine->IsAudioFile(node);
+	return true;
+}
+
 float  __fastcall XPlayers::GetVolume(void) {
 	if ( PEngine ) return PEngine->Volume;
 	return 0.0;
@@ -135,8 +141,6 @@ bool __fastcall XPlayers::FadeIn(void) {
 	return PIsFadeIn;
 }
 
-
-
 // ---------------------------------------------------------------------------
 //   Independant du moteur
 // ---------------------------------------------------------------------------
@@ -148,7 +152,6 @@ XNode* __fastcall XPlayers::GetNode(void) {
 bool __fastcall XPlayers::GetIsValid(void) {
 	return (PNode != NULL);
 }
-
 
 void __fastcall XPlayers::FadeInAuto(QWORD length) {
 	if (PNode == NULL) return;
@@ -179,7 +182,6 @@ void __fastcall XPlayers::FadeOutNow(QWORD length) {
 	PFadeOutMini = length;
 	PIsFadeOutAuto = false;
 }
-
 
 bool __fastcall XPlayers::FadeOut(void) {
 	QWORD ms, p;

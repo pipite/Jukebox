@@ -117,6 +117,7 @@
         <LinkPackageStatics>rtl.lib;vcl.lib;vclimg.lib;vclwinx.lib</LinkPackageStatics>
         <BCC_UseClassicCompiler>false</BCC_UseClassicCompiler>
         <BCC_InstructionSet>4</BCC_InstructionSet>
+        <BCC_CPPCompileAlways>true</BCC_CPPCompileAlways>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <Defines>NDEBUG;$(Defines)</Defines>

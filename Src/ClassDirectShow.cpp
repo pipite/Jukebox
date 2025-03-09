@@ -56,6 +56,10 @@ void __fastcall XDirectShow::Cleanup(void) {
 	PIsPlaying   = false;
 }
 
+bool __fastcall XDirectShow::IsAudioFile(XNode *node) {
+	return true;
+}
+
 bool IsValidMediaFile(XNode *node) {
 	IMediaDet* pMediaDet = nullptr;
     HRESULT hr = CoInitialize(NULL);

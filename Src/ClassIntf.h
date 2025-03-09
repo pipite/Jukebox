@@ -11,8 +11,9 @@ class XIntf;
 //---------------------------------------------------------------------------
 
 class XIntf {
-	int PMinTop;
-	int PMinLeft;
+	int    PMinTop;
+	int    PMinLeft;
+	TBoxon *Boxon;
 
 	HWND 	__fastcall GetWinHandle(void);
 	int  	__fastcall GetWinTop(void);
@@ -57,6 +58,7 @@ class XIntf {
 
 
 public:
+	XCore  *Core;
 	XDropFolder *ImgDropFolder;
 
 	__fastcall XIntf(TBoxon *boxon);
@@ -65,6 +67,7 @@ public:
 	void __fastcall LoadingAnimation(bool loading);
 	void __fastcall WorkingAnimation(bool work);
 	void __fastcall DropFolder(bool dropfolder);
+	void __fastcall StopPlay(void);
 
 	__property TCustomImageList*  TvIcones      = { read = GetTvIcones};
 	__property bool               Timers        = {                       	write = SetTimers};

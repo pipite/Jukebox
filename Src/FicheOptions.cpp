@@ -175,3 +175,21 @@ void __fastcall TOptions::CbPanelResizeClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TOptions::Button5Click(TObject *Sender)
+{
+	XNode *node;
+
+	LabelProgressValid->Caption = "Debut du Scan";
+	Core->Mix->Stop();
+	for (int i = 0; i < (Core->TvList->NRSong->Child->Count); i++) {
+		node = Core->TvList->NRSong->ChildAt(i);
+		if ( Core->Mix->Test->IsAudioFile(node) ) {
+			LabelProgressValid->Caption = UnicodeString(i);
+		} else {
+			MemoInvalidAudioFiles->Lines->Add( node->Path );
+		}
+
+	}
+}
+//---------------------------------------------------------------------------
+

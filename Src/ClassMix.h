@@ -19,6 +19,7 @@ class XMix {
 	XPlayers        *PCurrent;
 	XPlayers        *PNext;
 	XPlayers        *PTmp;
+	XPlayers        *PTest;
 	XSpectrum       *PSpectrum;
 	XWave           *PWave;
 	bool             PIsMixing;
@@ -51,6 +52,7 @@ public:
 	__property XPlayers        *Last      = { read = PLast};
 	__property XPlayers        *Current   = { read = PCurrent};
 	__property XPlayers        *Next      = { read = PNext};
+	__property XPlayers        *Test      = { read = PTest};
 	__property XSpectrum       *Spectrum  = { read = PSpectrum};
 	__property XWave           *Wave      = { read = PWave};
 };

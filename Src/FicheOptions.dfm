@@ -3,7 +3,7 @@ object Options: TOptions
   Top = 0
   BorderStyle = bsToolWindow
   Caption = '  Boxon Options Setup'
-  ClientHeight = 501
+  ClientHeight = 666
   ClientWidth = 298
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -44,8 +44,8 @@ object Options: TOptions
     ExplicitWidth = 59
   end
   object Label5: TLabel
-    Left = 0
-    Top = 97
+    Left = -2
+    Top = 265
     Width = 300
     Height = 25
     Align = alCustom
@@ -61,8 +61,8 @@ object Options: TOptions
     ParentFont = False
   end
   object LbRandomTrack: TLabel
-    Left = 51
-    Top = 447
+    Left = 49
+    Top = 615
     Width = 199
     Height = 19
     Caption = '5 Random Tracks preloaded'
@@ -75,17 +75,24 @@ object Options: TOptions
     ParentFont = False
   end
   object Label2: TLabel
-    Left = 8
-    Top = 483
+    Left = 6
+    Top = 651
     Width = 284
     Height = 13
     Alignment = taCenter
     AutoSize = False
     Caption = #169' B.Tran 2020 - bernard_tran@hotmail.com'
   end
-  object GroupBox1: TGroupBox
+  object LabelProgressValid: TLabel
     Left = 8
-    Top = 231
+    Top = 141
+    Width = 254
+    Height = 13
+    Caption = 'Cliquer sur Verify Valid Audio Files pour lancer le scan'
+  end
+  object GroupBox1: TGroupBox
+    Left = 6
+    Top = 399
     Width = 284
     Height = 153
     Caption = ' Fonts '
@@ -176,8 +183,8 @@ object Options: TOptions
     OnClick = Button1Click
   end
   object Button2: TButton
-    Left = 163
-    Top = 128
+    Left = 161
+    Top = 296
     Width = 129
     Height = 34
     Caption = 'Save Playlist'
@@ -192,8 +199,8 @@ object Options: TOptions
     OnClick = Button2Click
   end
   object Button3: TButton
-    Left = 8
-    Top = 128
+    Left = 6
+    Top = 296
     Width = 129
     Height = 34
     Caption = 'Load Playlist'
@@ -224,8 +231,8 @@ object Options: TOptions
     OnClick = Button4Click
   end
   object UpDown: TUpDown
-    Left = 28
-    Top = 444
+    Left = 26
+    Top = 612
     Width = 17
     Height = 25
     Min = 1
@@ -234,8 +241,8 @@ object Options: TOptions
     OnChangingEx = UpDownChangingEx
   end
   object GroupBox2: TGroupBox
-    Left = 8
-    Top = 176
+    Left = 6
+    Top = 344
     Width = 284
     Height = 49
     Caption = ' Interface '
@@ -253,8 +260,8 @@ object Options: TOptions
     end
   end
   object GroupBox3: TGroupBox
-    Left = 8
-    Top = 390
+    Left = 6
+    Top = 558
     Width = 284
     Height = 51
     Caption = 'Begin / End Track Low Volume Cut  '
@@ -278,11 +285,34 @@ object Options: TOptions
       OnChange = SbSensibilityChange
     end
   end
+  object Button5: TButton
+    Left = 8
+    Top = 100
+    Width = 282
+    Height = 34
+    Caption = 'Verify Valid Audio Files'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    TabOrder = 8
+    OnClick = Button5Click
+  end
+  object MemoInvalidAudioFiles: TMemo
+    Left = 8
+    Top = 160
+    Width = 281
+    Height = 101
+    TabOrder = 9
+  end
   object FileOpenDialog: TFileOpenDialog
     FavoriteLinks = <>
     FileTypes = <>
     Options = [fdoPickFolders]
-    Left = 256
-    Top = 472
+    Left = 254
+    Top = 640
   end
 end

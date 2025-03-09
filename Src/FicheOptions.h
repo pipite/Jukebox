@@ -48,6 +48,9 @@ __published:	// Composants gérés par l'EDI
 	TScrollBar *SbSensibility;
 	TLabel *Label1;
 	TLabel *Label2;
+	TButton *Button5;
+	TMemo *MemoInvalidAudioFiles;
+	TLabel *LabelProgressValid;
 	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall Button3Click(TObject *Sender);
 	void __fastcall Button4Click(TObject *Sender);
@@ -60,6 +63,7 @@ __published:	// Composants gérés par l'EDI
           TUpDownDirection Direction);
 	void __fastcall SbSensibilityChange(TObject *Sender);
 	void __fastcall CbPanelResizeClick(TObject *Sender);
+	void __fastcall Button5Click(TObject *Sender);
 
 private:	// Déclarations utilisateur
 public:		// Déclarations utilisateur

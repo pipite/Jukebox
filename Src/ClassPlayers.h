@@ -31,15 +31,16 @@ public:
 	virtual bool   __fastcall Initialize(HWND hwnd)                          = 0;
 	virtual bool   __fastcall Play(void)                                     = 0;
 	virtual void   __fastcall Stop(void)                                     = 0;
+	virtual bool   __fastcall IsAudioFile(XNode *node)                       = 0;
 
-	__property XNode*           Node     	= {               			write = SetNode};
-	__property unsigned __int64 MsLength	= {read = GetMsLength};
-	__property unsigned __int64 Position    = {read = GetPosition, 		write = SetPosition};
-	__property bool             IsPlaying   = {read = GetIsPlaying};
-	__property bool             HaveChannel = {read = GetHaveChannel};
-	__property float           *FFT		    = {read = GetFFT};
-	__property float            Volume   	= {read = GetVolume, 		write = SetVolume};
-	__property unsigned __int64 MsBeforeEnd = {read = GetMsBeforeEnd};
+	__property XNode*           Node     	= {               			write = SetNode     };
+	__property unsigned __int64 MsLength	= {read = GetMsLength                           };
+	__property unsigned __int64 Position    = {read = GetPosition, 		write = SetPosition };
+	__property bool             IsPlaying   = {read = GetIsPlaying                          };
+	__property bool             HaveChannel = {read = GetHaveChannel                        };
+	__property float           *FFT		    = {read = GetFFT                                };
+	__property float            Volume   	= {read = GetVolume, 		write = SetVolume   };
+	__property unsigned __int64 MsBeforeEnd = {read = GetMsBeforeEnd                        };
 };
 
 #include "ClassBass.h"
@@ -83,7 +84,7 @@ public:
 
 	void       __fastcall Play(void);
 	void       __fastcall Stop(void);
-
+    bool       __fastcall IsAudioFile(XNode *node);
 	bool       __fastcall FadeIn(void);
 	bool       __fastcall FadeOut(void);
 	void       __fastcall FadeOutNow(QWORD length);

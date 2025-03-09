@@ -20,6 +20,7 @@ __fastcall TBoxon::TBoxon(TComponent* Owner) : TForm(Owner)
 	Created = false;
 	Intf = new XIntf(this);
 	Core = new XCore(Intf);
+	Intf->Core = Core;
 	if (!Core->Created) return;
 	Intf->ImgDropFolder->Core = Core;
 
@@ -210,13 +211,7 @@ void __fastcall TBoxon::TbAzClick(TObject *Sender)
 
 void __fastcall TBoxon::TbStopPlayClick(TObject *Sender)
 {
-	if (Core->Mix->Current->IsPlaying) {
-		Core->Mix->Stop();
-		TbStopPlay->ImageIndex = 1;
-	} else {
-		Core->Mix->Play();
-		TbStopPlay->ImageIndex = 0;
-	}
+	Core->Intf->StopPlay();
 }
 
 void __fastcall TBoxon::TbMixNextNowClick(TObject *Sender)

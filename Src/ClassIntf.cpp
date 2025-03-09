@@ -11,12 +11,24 @@
 // ---------------------------------------------------------------------------
 __fastcall XIntf::XIntf(TBoxon *boxon) {
 	ImgDropFolder = NULL;
+	Boxon = boxon;
 	ImgDropFolder = new XDropFolder( Boxon->PanelList );
 	DropFolder(false);
 }
 
 __fastcall XIntf::~XIntf(void) {
 	if (ImgDropFolder) delete ImgDropFolder;
+}
+
+void __fastcall XIntf::StopPlay(void)
+{
+	if (Core->Mix->Current->IsPlaying) {
+		Core->Mix->Stop();
+		Boxon->TbStopPlay->ImageIndex = 1;
+	} else {
+		Core->Mix->Play();
+		Boxon->TbStopPlay->ImageIndex = 0;
+	}
 }
 
 void __fastcall XIntf::SetWinCaption(UnicodeString text) {
