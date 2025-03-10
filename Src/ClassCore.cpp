@@ -138,3 +138,32 @@ void __fastcall XCore::SetVolume(int value) {
 	PVolume = value;
 }
 
+/*
+TStringList* Split(const String& Texte, const WideChar Delimiteur) {
+	TStringList* Resultat = new TStringList();
+
+	// Cas d'une chaîne vide
+	if (Texte.IsEmpty()) {
+		return Resultat;
+	}
+
+	int DebutPos = 1;
+	int DelimPos = 0;
+
+	while ((DelimPos = Texte.Pos(Delimiteur, DebutPos)) != 0) {
+		String SousChaine = Texte.SubString(DebutPos, DelimPos - DebutPos);
+		Resultat->Add(SousChaine);
+		DebutPos = DelimPos + 1;
+	}
+
+	// Ajouter la dernière partie
+	if (DebutPos <= Texte.Length()) {
+		String DernierePart = Texte.SubString(DebutPos, Texte.Length() - DebutPos + 1);
+		Resultat->Add(DernierePart);
+	} else if (Texte[Texte.Length()] == Delimiteur) {
+		Resultat->Add(L"");
+	}
+
+	return Resultat;
+}
+*/

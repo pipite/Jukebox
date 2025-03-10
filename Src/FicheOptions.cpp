@@ -56,6 +56,7 @@ void __fastcall TOptions::Button1Click(TObject *Sender)
 		FileOpenDialog->Execute();
 		if (DirectoryExists(FileOpenDialog->FileName)) {
 			Core->Loader->Loaded  = false;
+            Core->SavFile->ArchiveArbo();
 			Core->ModifyFolderPath(FileOpenDialog->FileName);
 		}
 	}
@@ -89,6 +90,7 @@ void __fastcall TOptions::Button4Click(TObject *Sender)
 	} else {
 		if (DirectoryExists(Core->Settings->MusicPath)) {
 			Core->Loader->Loaded  = false;
+            Core->SavFile->ArchiveArbo();
 			Core->ModifyFolderPath(Core->Settings->MusicPath);
 		}
 	}
@@ -108,8 +110,6 @@ void __fastcall TOptions::Button2Click(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
-
-
 
 void __fastcall TOptions::RbFixedClick(TObject *Sender)
 {

@@ -215,7 +215,7 @@ object Options: TOptions
     OnClick = Button3Click
   end
   object Button4: TButton
-    Left = 163
+    Left = 161
     Top = 44
     Width = 129
     Height = 34

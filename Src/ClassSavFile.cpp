@@ -84,6 +84,12 @@ void __fastcall XFile::RemoveRootPath(bool bypass) {
 
 void __fastcall XFile::Save(void) {
 	if ( !Core->Loader->Loaded ) return;
+	//ArchiveArbo();
+	PFile->Clear();
+	PLevel = 0;
+	SaveRecurseNode(Core->TvList->NRArbo);
+	PFile->SaveToFile(PathArbo);
+	Core->Loader->SaveArboNeeded = false;
 	if (Core->Loader->SavePlayListNeeded) {
 		ArchivePlayList();
 		SavePlaylist(PathPlaylist);
@@ -128,6 +134,26 @@ void __fastcall XFile::SaveRecurseNode(XNode *node) {
 		SaveRecurseNode(node->ChildAt(i));
 		PLevel--;
 	}
+}
+
+UnicodeString __fastcall XFile::GetPathArbo(void) {
+	return Core->Settings->SettingPath + "\\Arbo.sav";
+}
+
+UnicodeString __fastcall XFile::GetPathPlaylist(void) {
+	return Core->Settings->SettingPath + "\\PlayList.sav";
+}
+
+bool __fastcall XFile::GetHaveArbo(void) {
+	return FileExists(PathArbo);
+}
+
+bool __fastcall XFile::GetHavePlaylist(void) {
+	return FileExists(PathPlaylist);
+}
+
+UnicodeString __fastcall XFile::GetExtendDate(void) {
+	return FormatDateTime(L".yyyy_mm_dd__hh_nn_ss",Now());
 }
 
 void __fastcall XFile::Purge(UnicodeString filename) {
@@ -186,29 +212,8 @@ void __fastcall XFile::Purge(UnicodeString filename) {
 	delete FileDate;
 }
 
-UnicodeString __fastcall XFile::GetPathArbo(void) {
-	return Core->Settings->SettingPath + "\\Arbo.sav";
-}
-
-UnicodeString __fastcall XFile::GetPathPlaylist(void) {
-	return Core->Settings->SettingPath + "\\PlayList.sav";
-}
-
-bool __fastcall XFile::GetHaveArbo(void) {
-	return FileExists(PathArbo);
-}
-
-bool __fastcall XFile::GetHavePlaylist(void) {
-	return FileExists(PathPlaylist);
-}
-
-UnicodeString __fastcall XFile::GetExtendDate(void) {
-	return FormatDateTime(L".yyyy_mm_dd__hh_nn_ss",Now());
-}
-
-
 /*
- void __fastcall XFile::ConvertArbo(void) {
+void __fastcall XFile::ConvertArbo(void) {
 	char s1[1000];
 	UnicodeString p1, p2;
 	int i;

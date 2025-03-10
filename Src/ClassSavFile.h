@@ -24,18 +24,18 @@ class XFile {
 	void 			__fastcall MoveToArchive(UnicodeString src);
 
 	void 			__fastcall SaveRecurseNode(XNode *node);
-	void 			__fastcall ArchiveArbo(void);
 	void 			__fastcall RemoveRootPath(bool bypass);
 
 	public:
 					__fastcall XFile(XCore *core);
 					__fastcall ~XFile(void);
 
-	//void 			__fastcall ConvertArbo(void);
+	void 			__fastcall ConvertArbo(void);
 	bool 			__fastcall ConvertPlaylist(void);
 	void			__fastcall Save(void);
 	void 			__fastcall SavePlaylist(UnicodeString filename);
 	void 			__fastcall ArchivePlayList(void);
+	void 			__fastcall ArchiveArbo(void);
 	void 			__fastcall Purge(UnicodeString filename);
 
 	__property UnicodeString PathArbo	  = {read = GetPathArbo};

@@ -36,7 +36,7 @@ void __fastcall ThreadScanPlaylist::Execute() {
 	char a;
 	XNode *na[50], *naaz[50], *ns;
 	UnicodeString s, f;
-	unsigned p, nt, cpttile /*, cp*/ ;
+	unsigned p, nt, cpttile , cp;
 
 	na[0] = NULL;
 
@@ -45,14 +45,11 @@ void __fastcall ThreadScanPlaylist::Execute() {
 	if ( !Core->SavFile->ConvertPlaylist() ) { Synchronize ( Abort ); return; }
 	PFile->LoadFromFile(Core->Settings->SettingPath + "\\PlayList.sav");
 	for (i = 1; i < PFile->Count ; i++) {
-		s  = PFile->Strings[i];
-		p  = s.Pos(',');
+		s      = PFile->Strings[i]; p = s.Pos(',');
 		PLevel = (unsigned) s.SubString(1,p-1).ToInt() ;
-		s      = s.SubString(p+1,s.Length()) ;
-		p      = s.Pos(',');
-		//cp     = (unsigned) s.SubString(1,p-1).ToInt();
-		s      = s.SubString(p+1,s.Length());
-		p      = s.Pos(',');
+		s      = s.SubString(p+1,s.Length()); p = s.Pos(',');
+		cp     = (unsigned) s.SubString(1,p-1).ToInt();
+		s      = s.SubString(p+1,s.Length()); p = s.Pos(',');
 		nt     = (unsigned) s.SubString(1,p-1).ToInt();
 		s      = s.SubString(p+1,s.Length());
 		f      = UpperCase(ExtractFileName(s));
