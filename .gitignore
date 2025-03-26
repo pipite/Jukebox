@@ -1,0 +1,25 @@
+*.ilc
+*.ild
+*.ilf
+*.ils
+*.map
+*.pdi
+*.tds
+*.ast*
+.vscode/*
+Component/*
+Compil/*
+Obj/*
+Proj/__history
+Proj/__recovery
+Src/__history
+Src/__recovery
+Config - playlist ancien format/
+Inno Setup/
+Redist/*
+Bin/Config/Backup/*
+!Redist/Readme.md
+!Obj/Readme.md
+!Compil/Readme.md
+!Component/Readme.md
+

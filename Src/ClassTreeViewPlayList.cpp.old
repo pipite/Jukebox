@@ -1,0 +1,473 @@
+﻿//---------------------------------------------------------------------------
+#include "JukeboxPCH1.h"
+#pragma hdrstop
+
+#include "ClassTreeViewPlayList.h"
+
+//---------------------------------------------------------------------------
+
+// -----------------------------------------------------
+// CLASS ClassTreeViewPlayList
+// -----------------------------------------------------
+__fastcall XTvPlayList::XTvPlayList(TComponent *owner, XCore *core) : TTreeView(owner){
+	Core             = core;
+	Parent           = (TPanel*) owner;
+	Images 			 = Core->Intf->TvIcones;
+	Align            = alClient;
+	ShowRoot         = false;
+	ShowLines        = false;
+	ShowButtons      = false;
+	ReadOnly         = false;
+	DoubleBuffered   = true;
+	OnCustomDrawItem = OCustomDrawItem;
+	OnEdited         = OEdited;
+	OnDblClick       = ODblClick;
+	OnMouseDown      = OMouseDown;
+	OnDragOver       = ODragOver;
+	OnDragDrop       = ODragDrop;
+	OnEndDrag        = OEndDrag;
+	OnResize         = OResize;
+
+	MultiSelect      = true;
+	MultiSelectStyle = TMultiSelectStyle() << msShiftSelect << msControlSelect;
+
+	Font->Size       = Core->FontSize;
+	StyleElements    >> seFont;
+	Font->Color      = Core->Settings->ColorPlaylist;
+	PTNTool          = new XTNodeTool();
+	PNR              = new XNode(NULL,L"Playlist", NODETYPE::ROOT);
+	Reset();
+}
+
+__fastcall XTvPlayList::~XTvPlayList(void) {
+	PNR->Clear();
+	if (PNR     != NULL) delete PNR;
+	if (PTNTool != NULL) delete PTNTool;
+}
+
+void __fastcall XTvPlayList::Reset(void) {
+	if (PTNR == NULL) PTNR = Items->AddObjectFirst(NULL,L"PlayList" , PNR );
+	if (PTNR->Count == 0) return;
+	PTNR->DeleteChildren();
+	PNR->Clear();
+	Refresh();
+}
+
+XNode* __fastcall XTvPlayList::GetNode(TTreeNode *tn) {
+	// Optimisation: retour direct avec cast sécurisé
+	return tn ? static_cast<XNode*>(tn->Data) : NULL;
+}
+
+void __fastcall XTvPlayList::Remove(TTreeNode *treenode) {
+	// Vérifications préliminaires
+	if (!treenode) return;
+	
+	XNode *cn = static_cast<XNode*>(treenode->Data);
+	if (!cn || cn == PNR) return;
+	
+	// Sauvegarde du parent avant suppression
+	TTreeNode *parentNode = treenode->Parent;
+	
+	// Détacher les données pour les chansons pour éviter les problèmes de mémoire
+	if (cn->NodeType == NODETYPE::SONG) {
+		treenode->Data = NULL;
+	}
+	
+	// Marquer que la playlist a été modifiée
+	Core->Loader->SavePlayListNeeded = true;
+	
+	// Suppression du nœud et de ses données
+	delete treenode;
+	delete cn;
+	
+	// Vérification et nettoyage du parent si nécessaire
+	if (parentNode) {
+		XNode *parentData = static_cast<XNode*>(parentNode->Data);
+		
+		// Suppression récursive des dossiers vides
+		if (parentData &&
+			parentData->NodeType == NODETYPE::FOLDER &&
+			!parentNode->HasChildren) {
+			Remove(parentNode);
+		}
+	}
+}
+
+void __fastcall XTvPlayList::OEdited(TObject *Sender, TTreeNode *Node, UnicodeString &S) {
+	// Vérifications préliminaires
+	if (!Node) return;
+	
+	XNode *cn = static_cast<XNode*>(Node->Data);
+	if (!cn) return;
+	
+	// Mise à jour du chemin uniquement pour les nœuds non-chansons
+	if (cn->NodeType != NODETYPE::SONG) {
+		// Marquer que la playlist a été modifiée
+		Core->Loader->SavePlayListNeeded = true;
+		
+		// Mise à jour du chemin
+		cn->Path = S;
+	}
+}
+
+void __fastcall XTvPlayList::ODblClick(TObject *Sender) {
+	// Vérifications préliminaires optimisées
+	static bool isProcessing = false;
+	
+	// Protection contre les doubles clics rapides
+	if (isProcessing) return;
+	isProcessing = true;
+	
+	// Vérification du nœud sélectionné
+	TTreeNode* selectedNode = Selected;
+	if (!selectedNode) {
+		isProcessing = false;
+		return;
+	}
+	
+	XNode* cn = static_cast<XNode*>(selectedNode->Data);
+	if (!cn) {
+		isProcessing = false;
+		return;
+	}
+	
+	// Traitement selon le type de nœud
+	if (cn->NodeType == NODETYPE::SONG) {
+		// Vérification si une chanson est déjà en cours de lecture
+		if (Core->Mix->IsMixing) {
+			// Attendre la fin du mixage en cours avant de lancer une nouvelle chanson
+			Core->Mix->Current->FadeOutNow(Core->Settings->FadeOutDuration / 2);
+		}
+		
+		// Copie vers l'historique (Past)
+		XNode* nodepast = PTNTool->CopyTo(Core->TvPast, selectedNode, Core->TvPast->TNR);
+		
+		// Analyse de la chanson
+		Core->Mix->Wave->Scan(nodepast);
+		
+		// Lecture de la chanson
+		Core->Mix->NodeNow(nodepast);
+		
+		// Expansion de l'historique pour montrer la chanson ajoutée
+		Core->TvPast->TNR->Expand(false);
+	}
+	else {
+		// Chargement asynchrone du dossier si nécessaire
+		if (!cn->Populated && cn->HaveChild) {
+			new ThreadPopulate(this, selectedNode, false);
+		}
+	}
+	
+	// Réinitialisation du flag de traitement
+	isProcessing = false;
+}
+
+void __fastcall XTvPlayList::ExpandRoot(void) {
+	// Vérification préliminaire
+	if (!PTNR) return;
+	
+	// Récupération du nœud de données
+	XNode *cn = static_cast<XNode*>(PTNR->Data);
+	if (!cn) return;
+	
+	// Chargement asynchrone du dossier si nécessaire
+	if (!cn->Populated && cn->HaveChild) {
+		new ThreadPopulate(this, PTNR, false);
+	}
+	
+	// Expansion du nœud racine
+	PTNR->Expand(false);
+}
+
+void __fastcall XTvPlayList::OCustomDrawItem(TCustomTreeView *Sender, TTreeNode *Node, TCustomDrawState State, bool &DefaultDraw) {
+	XNode *cn = static_cast<XNode*>(Node->Data);
+	if (!cn) return;
+	
+	// Configuration commune pour tous les types
+	Sender->Canvas->Brush->Color = clBlack;
+	
+	// Définir explicitement les styles de police (aucun style spécial par défaut)
+	Sender->Canvas->Font->Style = TFontStyles();  // Ensemble vide = texte normal
+	
+	// Variables déclarées en dehors du switch pour éviter les erreurs de portée
+	int baseIcon = 0;
+	int selectedIcon = 0;
+	int playlistIcon = 0;
+	
+	// Utilisation d'un switch pour une meilleure performance avec des types énumérés
+	switch (cn->NodeType) {
+		case NODETYPE::ROOT:
+			SetIcon(Node, 0, 0, 0);
+			return;
+			
+		case NODETYPE::SONG:
+			// Optimisation: réduction des conditions et calculs redondants
+			if (cn->CountSession > 0) {        // Rouge
+				Sender->Canvas->Font->Color = clRed;
+				baseIcon = 8;
+				selectedIcon = 6;
+				
+				// Traitement spécial pour les éléments de playlist
+				if (cn->CountPlayList > 0) {
+					SetIcon(Node, 12, 12, 10); // Trombone
+					return;
+				}
+			} else if (cn->CountPlay > 0) {    // Vert
+				Sender->Canvas->Font->Color = clLime;
+				baseIcon = 7;
+				selectedIcon = 6;
+			} else {                           // Jaune (CountPlay == 0)
+				Sender->Canvas->Font->Color = clYellow;
+				baseIcon = 5;
+				selectedIcon = 6;
+			}
+			
+			// Application des icônes pour les éléments sans playlist ou cas par défaut
+			if (cn->CountPlayList > 0) {
+				// Calcul de l'icône pour les éléments avec playlist
+				playlistIcon = (cn->CountPlay > 0) ? 11 : 9;
+				SetIcon(Node, playlistIcon, playlistIcon, 10);
+			} else {
+				SetIcon(Node, baseIcon, baseIcon, selectedIcon);
+			}
+			return;
+			
+		case NODETYPE::FOLDER:
+			// Optimisation pour les dossiers
+			SetIcon(Node, 13, 13, 13); // PlayList
+			return;
+			
+		default:
+			return;
+	}
+}
+
+void __fastcall XTvPlayList::SetIcon(TTreeNode *tn, int a, int b, int c) {
+	// Optimisation: vérification de validité du nœud
+	if (!tn) return;
+	
+	// Assignation directe des valeurs d'icônes
+	tn->ImageIndex = a;
+	tn->ExpandedImageIndex = b;
+	tn->SelectedIndex = c;
+}
+
+void __fastcall XTvPlayList::AddPlayList(void) {
+	// Marquer que la playlist a été modifiée
+	Core->Loader->SavePlayListNeeded = true;
+	
+	// Création d'un nouveau nœud de dossier
+	XNode *cn = new XNode(PNR, L"List", NODETYPE::FOLDER);
+	
+	// Ajout du nœud à l'arborescence visuelle si le nœud racine est peuplé
+	if (PNR && PNR->Populated) {
+		Items->BeginUpdate();
+		Items->AddChildObject(PTNR, L"List", cn);
+		Items->EndUpdate();
+		
+		// Expansion du nœud racine pour montrer le nouveau dossier
+		if (PTNR) {
+			PTNR->Expand(false);
+		}
+	}
+}
+
+
+// -----------------------------------------------------
+//          DRAG DROP
+// -----------------------------------------------------
+
+void __fastcall XTvPlayList::OMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift, int X, int Y) {
+	// Vérification rapide pour éviter le traitement inutile
+	if (Button != mbLeft) return;
+	
+	// Éviter le cast inutile puisque nous savons que Sender est un TTreeView
+	// (cette méthode est liée à l'événement OnMouseDown de this, qui est un TTreeView)
+	TTreeView *tv = static_cast<TTreeView*>(Sender);
+	
+	// Vérification directe si un nœud existe à la position du clic
+	TTreeNode* node = tv->GetNodeAt(X, Y);
+	if (node) {
+		tv->BeginDrag(false, -1);
+	}
+}
+
+void __fastcall XTvPlayList::ODragOver(TObject *Sender, TObject *Source, int X, int Y, TDragState State, bool &Accept) {
+	// Approche simplifiée pour vérifier les sources valides
+	UnicodeString sourceClass = Source->ClassName();
+	
+	// Vérification directe avec des comparaisons de chaînes
+	Accept = (sourceClass == L"XTvList") ||
+	         (sourceClass == L"XTvNext") ||
+	         (sourceClass == L"XTvPast") ||
+	         (sourceClass == L"XTvPlayList");
+	
+	// Si aucune source n'est acceptée, acceptons au moins les TreeView
+	if (!Accept) {
+		Accept = Source->InheritsFrom(__classid(TTreeView));
+	}
+}
+
+void __fastcall XTvPlayList::ODragDrop(TObject *Sender, TObject *Source, int X, int Y) {
+	// Détermination optimisée de la source
+	int src;
+	UnicodeString sourceClassName = Source->ClassName();
+
+	// Utilisation d'une table de correspondance pour déterminer la source
+	static struct {
+		const wchar_t* className;
+		int sourceType;
+	} sourceTypes[] = {
+		{ L"XTvList",     0 },
+		{ L"XTvNext",     0 },
+		{ L"XTvPast",     0 },
+		{ L"XTvPlayList", 1 }
+	};
+
+	// Recherche du type de source
+	src = -1;
+	for (int i = 0; i < sizeof(sourceTypes)/sizeof(sourceTypes[0]); i++) {
+		if (sourceClassName == sourceTypes[i].className) {
+			src = sourceTypes[i].sourceType;
+			break;
+		}
+	}
+
+	// Vérification de la validité de la source
+	if (src == -1) return;
+
+	// Cast de la source en TTreeView
+	TTreeView *tvs = static_cast<TTreeView*>(Source);
+
+	// Détermination de la destination
+	TTreeNode *tnd = GetNodeAt(X, Y);
+	XNode *nd = tnd ? static_cast<XNode*>(tnd->Data) : NULL;
+
+	// Si aucun nœud n'est trouvé à la position, utiliser le nœud racine
+	if (tnd == NULL) {
+		tnd = TNR;
+		nd = NR;
+	}
+
+	// S'assurer que le nœud de destination est peuplé
+	if (nd && !nd->Populated && !nd->IsSong) {
+		nd->Populated = true;
+	}
+
+	// Début de la mise à jour groupée
+	Items->BeginUpdate();
+
+	// Traitement de tous les nœuds sélectionnés
+	bool success = false;
+	for (unsigned i = 0; i < tvs->SelectionCount; i++) {
+		TTreeNode *tns = tvs->Selections[i];
+		if (!tns) continue;
+
+		// Optimisation: utilisation d'une table de décision pour le traitement
+		if (src == 0) {
+			// Source externe: copier
+			XNode* result = PTNTool->CopyTo(this, tns, tnd);
+			if (result != NULL) success = true;
+		} else { // src == 1
+			// Source interne: déplacer
+			PTNTool->MoveTo(this, tns, tnd);
+			success = true;
+		}
+
+		// Marquer que la playlist a été modifiée
+		Core->Loader->SavePlayListNeeded = true;
+	}
+
+	// Fin de la mise à jour groupée
+	Items->EndUpdate();
+
+	// Expansion du nœud de destination pour montrer les nouveaux éléments
+	if (success && tnd) {
+		tnd->Expand(false);
+	}
+}
+/*
+void __fastcall XTvPlayList::ODragDrop(TObject *Sender, TObject *Source, int X, int Y)
+void __fastcall XTvPlayList::ODragDrop(TObject *Sender, TObject *Source, int X, int Y) {
+	// Détermination simplifiée de la source
+	int src = -1;
+	UnicodeString sourceClassName = Source->ClassName();
+	
+	// Vérification directe du type de source
+	if (sourceClassName == L"XTvList" ||
+	    sourceClassName == L"XTvNext" ||
+	    sourceClassName == L"XTvPast") {
+		src = 0; // Source externe
+	} else if (sourceClassName == L"XTvPlayList") {
+		src = 1; // Source interne (playlist)
+	} else if (Source->InheritsFrom(__classid(TTreeView))) {
+		// Accepter d'autres TreeView comme sources externes
+		src = 0;
+	}
+	
+	// Vérification de la validité de la source
+	if (src == -1) return;
+	
+	// Cast de la source en TTreeView
+	TTreeView *tvs = static_cast<TTreeView*>(Source);
+	
+	// Détermination de la destination
+	TTreeNode *tnd = GetNodeAt(X, Y);
+	XNode *nd = tnd ? static_cast<XNode*>(tnd->Data) : NULL;
+	
+	// Début de la mise à jour groupée
+	Items->BeginUpdate();
+	
+	// Traitement de tous les nœuds sélectionnés
+	for (unsigned i = 0; i < tvs->SelectionCount; i++) {
+		TTreeNode *tns = tvs->Selections[i];
+		
+		// Optimisation: utilisation d'une table de décision pour le traitement
+		if (nd == NULL) {
+			// Destination: racine
+			if (src == 0) {
+				PTNTool->CopyTo(this, tns, TNR);
+			} else { // src == 1
+				PTNTool->MoveTo(this, tns, TNR);
+			}
+		} else {
+			// Destination: nœud spécifique
+			if (src == 0) {
+				PTNTool->CopyTo(this, tns, tnd);
+			} else { // src == 1
+				PTNTool->MoveTo(this, tns, tnd);
+			}
+		}
+		
+		// Marquer que la playlist a été modifiée
+		Core->Loader->SavePlayListNeeded = true;
+	}
+	
+	// Fin de la mise à jour groupée
+	Items->EndUpdate();
+}
+*/
+void __fastcall XTvPlayList::OEndDrag(TObject *Sender, TObject *Target, int X, int Y) {
+	// Optimisation: mise à jour conditionnelle uniquement si nécessaire
+	if (Target) {
+		// Mise à jour de l'interface après un glisser-déposer réussi
+		Update();
+		
+		// Marquer que la playlist a été modifiée
+		Core->Loader->SavePlayListNeeded = true;
+	}
+}
+
+void __fastcall XTvPlayList::OResize(TObject *Sender) {
+	// Optimisation: masquage de la barre de défilement horizontale lors du redimensionnement
+	ShowScrollBar(Handle, SB_HORZ, false);
+	
+	// Ajustement de la largeur des colonnes si nécessaire
+	if (PTNR && PTNR->IsVisible) {
+		// Expansion du nœud racine pour assurer la visibilité des éléments
+		PTNR->Expand(false);
+	}
+}
+
+
+
